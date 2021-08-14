@@ -1,6 +1,6 @@
 const HDWalletProvider= require('@truffle/hdwallet-provider');
 const Web3=require('web3');
-//0x9eb0d2829286A8892d21f5BC2b044413d376BeA3
+
 
 
 const compiledFactory = require("./build/CampaignFactory.json");
