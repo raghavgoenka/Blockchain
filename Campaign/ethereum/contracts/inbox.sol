@@ -1,19 +1,31 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+contract CampaignFactory{
 
+    address [] public deployedCampaigns;
+
+    function createCampaign(uint minimum)  public{
+      address  newCampaign=address( new Campaign(minimum,msg.sender));
+       deployedCampaigns.push(newCampaign);
+    }
+    function getDeployedCampaigns() public view returns (address []memory){
+        return deployedCampaigns;
+    }
+}
 
 contract Campaign {
-    struct Request {
+    struct  Request  {
         string description;
         uint value;
         address recipient;
         bool complete;
+        uint approvalCount;
+        mapping(address => bool) approvals;
        
-        
     }
 
-    Request[] public requests;
+    Request  []  public requests;
     address public manager;
     uint public minimumContribution;
     mapping(address => bool) public approvers;
@@ -24,8 +36,8 @@ contract Campaign {
         _;
     }
 
-    constructor  (uint minimum)  {
-        manager = msg.sender;
+    constructor  (uint minimum,address creator)  {
+        manager = creator;
         minimumContribution = minimum;
     }
 
@@ -37,19 +49,46 @@ contract Campaign {
     }
 
     function createRequest(string memory description, uint value, address recipient) public restricted {
-        Request memory newRequest = Request({
-           description: description,
-           value: value,
-           recipient: recipient,
-           complete: false
-          
-        });
+       
+        Request storage newRequest= requests.push();
+          newRequest.description = description;
+          newRequest.value = value;
+          newRequest.recipient = recipient;
+          newRequest.complete=false;
+          newRequest.approvalCount = 0;
 
-        requests.push(newRequest);
+    }
+    function approveRequest(uint index) public {
+        Request storage request = requests[index];
+        require(approvers[msg.sender]);
+        require(!request.approvals[msg.sender] );
+        request.approvals[msg.sender] = true;
+        request.approvalCount++;
+
+    }
+    function finalizeRequest(uint index) public restricted{
+          
+        Request storage  request = requests[index];
+        require(!request.complete);
+        require(request.approvalCount >= (approversCount/2));
+        payable(request.recipient).transfer(request.value);
+        request.complete = true;
+
+
     }
 
-    
-  
+    function getSummary() public view returns (uint,uint,uint,uint,address) {
+       return(
+         minimumContribution,
+         address(this).balance,
+         requests.length, 
+         approversCount,
+         manager
+       );
+    }
 
-    
+    function getRequestsCount() public view returns (uint) {
+        return requests.length;
+    }
+
 }

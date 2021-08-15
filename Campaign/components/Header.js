@@ -1,27 +1,23 @@
 import React, {Component} from 'react';
 import {Card,Button,Menu} from 'semantic-ui-react';   
 import 'semantic-ui-css/semantic.min.css';
-
+import {Link} from '../routes'
 
 
 export default (props) => {
   return(
-    <Menu style={{marginTop:'10px'}}>
-    <Menu.Item>
-      CrowdCoin 
-    </Menu.Item>
+    <Menu style={{marginTop:'30px'}}>
+    <Link route='/'>
+     <a className="item"> CrowdCoin</a> 
+    </Link>
 
     <Menu.Menu position='right'>
-      <Menu.Item
-       
-      >
-     Campaigns
-      </Menu.Item>
-
-      <Menu.Item
-       >
-        + 
-      </Menu.Item>
+    <Link route='/'>
+     <a className="item"> Campaigns</a> 
+    </Link> 
+    <Link route='/campaigns/new'>
+     <a className="item">+</a> 
+    </Link>
     </Menu.Menu>
   </Menu>
 
