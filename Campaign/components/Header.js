@@ -4,7 +4,7 @@ import 'semantic-ui-css/semantic.min.css';
 import {Link} from '../routes'
 
 
-export default (props) => {
+export default  (props) => {
   return(
     <Menu style={{marginTop:'30px'}}>
     <Link route='/'>

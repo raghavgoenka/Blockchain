@@ -43,7 +43,7 @@ contract Campaign {
 
     function contribute() public payable {
         require(msg.value > minimumContribution);
-
+     
         approvers[msg.sender] = true;
         approversCount++;
     }
@@ -82,6 +82,7 @@ contract Campaign {
         require(request.approvalCount >= (approversCount/2));
         payable(request.recipient).transfer(request.value);
         request.complete = true;
+        
 
 
     }
